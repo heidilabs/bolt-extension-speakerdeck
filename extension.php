@@ -3,6 +3,8 @@
 
 namespace SpeakerDeck;
 
+use Bolt\Cache;
+
 class Extension extends \Bolt\BaseExtension
 {
 
@@ -68,6 +70,14 @@ class Extension extends \Bolt\BaseExtension
 
     private function fetchOembed($url)
     {
+        $handle = preg_replace('/[^A-Za-z0-9_-]+/', '', $url);
+        $handle = str_replace('https', '', $handle);
+        $handle = str_replace('speakerdeckcom', '', $handle);
+
+        if ($this->app['cache']->contains($handle)) {
+           return $this->app['cache']->fetch($handle);
+        }
+
         $url = "http://speakerdeck.com/oembed.json?url=$url";
         $ch = curl_init();
 
@@ -79,6 +89,8 @@ class Extension extends \Bolt\BaseExtension
 
         $data = curl_exec($ch);
         curl_close($ch);
+
+        $this->app['cache']->save($handle, $data);
 
         return $data;
     }

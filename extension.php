@@ -36,14 +36,10 @@ class Extension extends \Bolt\BaseExtension
      */
     function initialize()
     {
-        // If your extension has a 'config.yml', it is automatically loaded.
-        // $foo = $this->config['bar'];
-
         // Initialize the Twig function
         $this->addTwigFunction('speakerdeck', 'twigSpeakerdeck');
 
     }
-
 
     /**
      * Twig function {{ speakerdeck('url') }} in SpeakerDeck extension.
